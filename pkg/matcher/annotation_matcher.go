@@ -24,6 +24,10 @@ const (
 	// regex allows array of string or a single string
 	// eg. ["foo", "bar"], ["foo"] or "foo".
 	reValidateTag = `^\[(.*)\]$|^[^[\]\s]*$`
+
+	// MaxCommentLogLength is the maximum number of characters
+    // to display in logs for gitops comments.
+    MaxCommentLogLength = 160
 )
 
 // prunBranch is value from annotations and baseBranch is event.Base value from event.
@@ -209,7 +213,13 @@ func MatchPipelinerunByAnnotation(ctx context.Context, logger *zap.SugaredLogger
 				strings.TrimPrefix(strings.TrimSuffix(event.TriggerComment, "\r\n"), "\r\n"))
 			if re.MatchString(strippedComment) {
 				event.EventType = opscomments.OnCommentEventType.String()
-				logger.Infof("matched pipelinerun with name: %s on gitops comment: %q", prName, event.TriggerComment)
+
+				comment := event.TriggerComment
+				if len(comment) > MaxCommentLogLength {
+					comment = comment[:MaxCommentLogLength] + "..."
+				}
+				logger.Infof("matched pipelinerun with name: %s on gitops comment: %q", prName, comment)
+
 				matchedPRs = append(matchedPRs, prMatch)
 				continue
 			}
