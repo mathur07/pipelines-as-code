@@ -26,8 +26,8 @@ const (
 	reValidateTag = `^\[(.*)\]$|^[^[\]\s]*$`
 
 	// MaxCommentLogLength is the maximum number of characters
-    // to display in logs for gitops comments.
-    MaxCommentLogLength = 160
+	// to display in logs for gitops comments.
+	MaxCommentLogLength = 160
 )
 
 // prunBranch is value from annotations and baseBranch is event.Base value from event.
